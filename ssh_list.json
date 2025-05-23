@@ -1,0 +1,16 @@
+[
+  {
+    "username": "root",
+    "password": "",
+    "host": "aus.190564326.xyz",
+    "port": 111,
+    "logintype": 0
+  },
+  {
+    "username": "root",
+    "password": "",
+    "host": "aus.190564326.xyz",
+    "port": 22,
+    "logintype": 0
+  }
+]
