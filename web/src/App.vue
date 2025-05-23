@@ -18,13 +18,20 @@
 <script>
 import Header from '@/components/Header'
 import Tabs from '@/components/Tabs'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'App',
     components: {
         vheader: Header,
         tabs: Tabs
-    }
+    },
+    mounted() {
+    this.fetchSshList(); // Dispatch the action when the app is mounted
+  },
+  methods: {
+    ...mapActions(['fetchSshList']),
+  }
 }
 </script>
 

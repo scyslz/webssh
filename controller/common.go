@@ -1,10 +1,16 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"sync"
 	"time"
 	"webssh/core"
+
+	"github.com/gin-gonic/gin"
 )
 
 // ResponseBody 响应信息结构体
@@ -39,4 +45,59 @@ func CheckSSH(c *gin.Context) *ResponseBody {
 		responseBody.Msg = err.Error()
 	}
 	return &responseBody
+}
+
+// SaveSsh saves an SSH connection configuration to a JSON file.
+var fileMutex sync.Mutex
+var filePath = "ssh_list.json"
+
+func SaveSsh(c *gin.Context) {
+	fileMutex.Lock()
+	defer fileMutex.Unlock()
+
+	// Decode new SSH configurations from request body
+	var newSshConfigs []core.SSHInfo
+	if err := c.BindJSON(&newSshConfigs); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Write updated data back to file
+	updatedData, err := json.MarshalIndent(newSshConfigs, "", "  ")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to marshal JSON: %v", err)})
+		return
+	}
+
+	if err := ioutil.WriteFile(filePath, updatedData, 0644); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to write file: %v", err)})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"message": "SSH configuration saved successfully"})
+	}
+}
+
+// SshList retrieves the list of saved SSH configurations.
+func SshList(c *gin.Context) {
+
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// File doesn't exist, return an empty array
+			c.JSON(http.StatusOK, []core.SSHInfo{})
+			return
+		}
+		// Other read errors
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to read file: %v", err)})
+		return
+	}
+
+	var sshList []core.SSHInfo
+	if len(data) > 0 {
+		if err := json.Unmarshal(data, &sshList); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to unmarshal JSON: %v", err)})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, sshList)
 }

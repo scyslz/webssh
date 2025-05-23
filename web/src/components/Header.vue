@@ -54,8 +54,9 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item
                                 v-for="item in sshList"
-                                :key="item.host" :command="item" style="padding:0 5px 0 10px">
-                                {{item.host}}
+                                :key="item.host+':'+item.port" :command="item" style="padding:0 5px 0 10px">
+                               {{ item.host }}:{{ item.port }}
+
                                 <i @click="cleanHistory(item)" class="el-icon-close"></i>
                             </el-dropdown-item>
                         </el-dropdown-menu>
@@ -70,6 +71,8 @@
 import { getLanguage } from '@/lang/index'
 import FileList from '@/components/FileList'
 import { mapState } from 'vuex'
+import { saveSSHList } from '@/api/common'
+
 
 export default {
     components: {
@@ -112,11 +115,13 @@ export default {
         cleanHistory(command) {
             const sshListObj = this.sshList
             sshListObj.forEach((v, i) => {
-                if (v.host === command.host) {
+                if (v.host === command.host && v.port === command.port) {
                     sshListObj.splice(i, 1)
                 }
             })
-            this.$store.commit('SET_LIST', window.btoa(JSON.stringify(sshListObj)))
+      saveSSHList(sshListObj);
+
+            this.$tore.commit('SET_LIST', window.btoa(JSON.stringify(sshListObj)))
         },
         handleChangePKFile(event) {
             const file = event.target.files[0]
@@ -149,7 +154,8 @@ export default {
             if (sshList === null) {
                 return []
             } else {
-                return JSON.parse(window.atob(sshList))
+              return JSON.parse(window.atob(sshList))
+              return sshList
             }
         }
     }

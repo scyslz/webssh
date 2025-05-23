@@ -195,7 +195,7 @@ export default {
             }
             this.termList.push({
                 name: `${sshInfo.host}-${this.genID(5)}`,
-                label: sshInfo.host,
+                label: `${sshInfo.host}:${sshInfo.port}`,
                 path: '/',
                 closable: true
             })

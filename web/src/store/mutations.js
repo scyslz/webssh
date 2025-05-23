@@ -1,4 +1,6 @@
+
 export default {
+
     SET_PASS(state, pass) {
         state.sshInfo.password = pass
     },

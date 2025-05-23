@@ -102,6 +102,17 @@ func main() {
 		}
 		c.JSON(200, responseBody)
 	})
+
+	sshInfo := server.Group("/ssh")
+	{
+		sshInfo.GET("/list", func(c *gin.Context) {
+			controller.SshList(c)
+		})
+		sshInfo.POST("/save", func(c *gin.Context) {
+			controller.SaveSsh(c)
+		})
+	}
+
 	file := server.Group("/file")
 	{
 		file.GET("/list", func(c *gin.Context) {

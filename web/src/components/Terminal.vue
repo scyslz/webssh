@@ -5,10 +5,11 @@
 </template>
 
 <script>
-import { checkSSH } from '@/api/common'
+import { checkSSH,saveSSHList } from '@/api/common'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { AttachAddon } from 'xterm-addon-attach'
+
 
 export default {
     name: 'Terminal',
@@ -167,8 +168,9 @@ export default {
                 }
             } else {
                 const sshListObj = JSON.parse(window.atob(sshList))
+                console.log("sshListObj"+sshListObj)
                 sshListObj.forEach((v, i) => {
-                    if (v.host === sshInfo.host) {
+                    if (v.host === sshInfo.host && v.port === sshInfo.port) {
                         sshListObj.splice(i, 1)
                     }
                 })
@@ -183,6 +185,7 @@ export default {
                 }
                 sshList = JSON.stringify(sshListObj)
             }
+            saveSSHList(sshList);
             this.$store.commit('SET_LIST', window.btoa(sshList))
         },
         close() {

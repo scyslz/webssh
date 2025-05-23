@@ -48,14 +48,14 @@ if [[ $# == 0 ]];then
 
     upload_item=($(ls -l|awk '{print $9}'|xargs -r))
 
-    for item in ${upload_item[@]}
-    do
-        upload $item
-    done
+    # for item in ${upload_item[@]}
+    # do
+    #     # upload $item
+    # done
 
     echo "upload completed!"
 
     cd $shell_path
 
-    rm -rf result
+
 fi
