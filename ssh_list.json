@@ -12,5 +12,12 @@
     "host": "aus.190564326.xyz",
     "port": 22,
     "logintype": 0
+  },
+  {
+    "username": "root",
+    "password": "Lz.0522",
+    "host": "aus.190564326.xyz",
+    "port": 57674,
+    "logintype": 0
   }
 ]

@@ -149,6 +149,7 @@ export default {
         },
         async connected() {
             const sshInfo = this.$store.state.sshInfo
+            console.log("sshInfo"+sshInfo+"----"+JSON.stringify(sshInfo))
             // 深度拷贝对象
             this.ssh = Object.assign({}, sshInfo)
             // 校验ssh连接信息是否正确
@@ -168,7 +169,7 @@ export default {
                 }
             } else {
                 const sshListObj = JSON.parse(window.atob(sshList))
-                console.log("sshListObj"+sshListObj)
+             
                 sshListObj.forEach((v, i) => {
                     if (v.host === sshInfo.host && v.port === sshInfo.port) {
                         sshListObj.splice(i, 1)
@@ -185,7 +186,8 @@ export default {
                 }
                 sshList = JSON.stringify(sshListObj)
             }
-            saveSSHList(sshList);
+
+            saveSSHList(JSON.parse(sshList));
             this.$store.commit('SET_LIST', window.btoa(sshList))
         },
         close() {
